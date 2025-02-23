@@ -39,6 +39,16 @@ def extract_auto1_data(url):
     return {
         'title': title_text,
         'price': price,
+
+        @app.get("/analyze")
+def analyze_car(url: str):
+    """Extrai dados de um carro a partir do Auto1.com"""
+    car_data = extract_auto1_data(url)
+    
+    if 'error' in car_data:
+        return car_data
+
+    return car_data
         'year': year,
         'kilometers': km
     }
