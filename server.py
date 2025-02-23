@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI
 import requests
 from bs4 import BeautifulSoup
@@ -16,6 +15,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def home():
+    return {"message": "API de Importação de Carros - Online"}
+
 def extract_mobile_de_data(url):
     """Extrai dados do Mobile.de"""
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -25,9 +28,9 @@ def extract_mobile_de_data(url):
         soup = BeautifulSoup(response.text, 'html.parser')
         
         title = soup.find('h1').text.strip() if soup.find('h1') else 'Sem título'
-        price = re.search(r'\d{1,3}(?:\.\d{3})*,\d{2}', response.text)
-        year = re.search(r'\b(19|20)\d{2}\b', response.text)
-        co2 = re.search(r'(\d{2,3})\s*g/km', response.text)
+        price = re.search(r'\\d{1,3}(?:\\.\\d{3})*,\\d{2}', response.text)
+        year = re.search(r'\\b(19|20)\\d{2}\\b', response.text)
+        co2 = re.search(r'(\\d{2,3})\\s*g/km', response.text)
         
         return {
             'title': title,
