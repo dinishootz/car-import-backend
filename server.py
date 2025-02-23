@@ -1,5 +1,5 @@
 def extract_auto1_data(url):
-    """Extrai dados do Auto1.com"""
+    """Extrai dados do Auto1.com de forma segura"""
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept-Language': 'de-DE,de;q=0.9,en;q=0.8',
@@ -13,7 +13,7 @@ def extract_auto1_data(url):
         session.headers.update(headers)
         
         response = session.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
+        response.raise_for_status()  # Se der erro, para aqui
 
     except requests.exceptions.RequestException as e:
         return {'error': f'Erro ao carregar a página: {str(e)}'}
@@ -39,16 +39,15 @@ def extract_auto1_data(url):
     return {
         'title': title_text,
         'price': price,
-
-        @app.get("/analyze")
-def analyze_car(url: str):
-    """Extrai dados de um carro a partir do Auto1.com"""
-    car_data = extract_auto1_data(url)
-    
-    if 'error' in car_data:
-        return car_data
-
-    return car_data
         'year': year,
         'kilometers': km
     }
+    
+    @app.get("/analyze")
+def analyze_car(url: str):
+    """Extrai dados de um carro a partir do Auto1.com"""
+    try:
+        car_data = extract_auto1_data(url)
+        return car_data
+    except Exception as e:
+        return {"error": f"Erro interno: {str(e)}"}
